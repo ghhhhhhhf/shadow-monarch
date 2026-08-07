@@ -60,6 +60,19 @@ button.good{color:var(--green);border-color:#2d674a}button.warn{color:var(--gold
 .modal{position:fixed;inset:0;background:#02050bdc;backdrop-filter:blur(9px);z-index:90;display:none;align-items:center;justify-content:center;padding:20px}.modal.show{display:flex}.modalbox{width:min(440px,100%);text-align:center;background:#0b111b;border:1px solid #30465e;border-radius:20px;padding:28px;box-shadow:0 20px 70px #000}.modalbox .big{font-size:44px}.modalbox h2{font-size:30px;margin:9px 0}.modalbox p{color:var(--muted);font-size:10px;line-height:1.6}.modalbox button{margin-top:18px;width:100%}
 @media(max-width:380px){h1{font-size:25px}.stats{grid-template-columns:1fr}.calendar{gap:4px}}
 </style>
+
+<style id="ultimate-css">
+.u-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.u-full{grid-column:1/-1}
+.u-input,.u-select,.u-text{width:100%;padding:11px;background:#0c141f;color:#eef5ff;border:1px solid #2a4058;border-radius:11px;outline:none}
+.u-text{min-height:95px;resize:vertical}.u-label{display:block;color:#8190a5;font-size:9px;letter-spacing:.7px;margin-bottom:6px}
+.u-chip{display:inline-block;padding:6px 8px;border-radius:8px;background:#142133;color:#62e6ff;font-size:8px;margin:3px 3px 0 0}
+.u-meter{height:7px;background:#172433;border-radius:20px;overflow:hidden;margin-top:6px}.u-meter i{display:block;height:100%;background:linear-gradient(90deg,#62e6ff,#9b72ff);transition:.35s}
+.u-coach{border:1px solid #31506b;background:radial-gradient(circle at 10% 0%,#62e6ff12,transparent 35%),#0a111b;border-radius:15px;padding:14px;line-height:1.6;font-size:10px;color:#c9d6e5}
+.u-coach b{color:#62e6ff}.u-timer{text-align:center;font-size:52px;font-weight:900;letter-spacing:2px;margin:12px 0;text-shadow:0 0 22px #62e6ff44}.u-mode{text-align:center;color:#8190a5;font-size:9px;letter-spacing:2px}.u-log{padding:9px 0;border-bottom:1px solid #203044;font-size:9px;color:#aebccc}.u-danger{color:#ff5d7a!important;border-color:#6c3040!important}
+.u-toggle{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #203044;font-size:10px}.u-toggle input{width:18px;height:18px}
+@media(max-width:380px){.u-grid{grid-template-columns:1fr}}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -76,6 +89,10 @@ button.good{color:var(--green);border-color:#2d674a}button.warn{color:var(--gold
     <button class="tab" data-tab="calendar">CALENDAR</button>
     <button class="tab" data-tab="boss">BOSS</button>
     <button class="tab" data-tab="achievements">ACHIEVEMENTS</button>
+<button class="tab" data-tab="coach">AI COACH</button>
+<button class="tab" data-tab="focus">FOCUS</button>
+<button class="tab" data-tab="backup">CLOUD/SAVE</button>
+<button class="tab" data-tab="settings">SETTINGS</button>
     <button class="tab" data-tab="reminders">REMINDERS</button>
   </div>
 
@@ -204,6 +221,87 @@ button.good{color:var(--green);border-color:#2d674a}button.warn{color:var(--gold
       </div>
     </section>
 
+  
+    <section id="coach" class="section">
+      <div class="card">
+        <div class="sectionhead"><div class="title">🤖 AI COACH</div><div class="hint">LOCAL / PRIVATE</div></div>
+        <div class="u-coach" id="coachMessage"></div>
+        <div style="height:9px"></div>
+        <div class="u-grid">
+          <button class="primary" onclick="coachRefresh()">🔄 NEW ADVICE</button>
+          <button onclick="coachPlan()">📋 MAKE TODAY'S PLAN</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sectionhead"><div class="title">🧠 DAILY CHECK-IN</div><div class="hint">1–5</div></div>
+        <div class="u-grid">
+          <label class="u-label">Energy<input class="u-input" id="energy" type="number" min="1" max="5" value="3"></label>
+          <label class="u-label">Focus<input class="u-input" id="mood" type="number" min="1" max="5" value="3"></label>
+        </div>
+        <label class="u-label" style="margin-top:10px">What is your main goal today?
+          <textarea class="u-text" id="journal" placeholder="Write a few lines..."></textarea>
+        </label>
+        <button class="primary" style="width:100%;margin-top:9px" onclick="saveCheckin()">SAVE CHECK-IN</button>
+      </div>
+    </section>
+
+    <section id="focus" class="section">
+      <div class="card">
+        <div class="sectionhead"><div class="title">🎯 FOCUS CHAMBER</div><div class="hint">POMODORO</div></div>
+        <div class="u-mode" id="timerMode">READY</div>
+        <div class="u-timer" id="timerDisplay">25:00</div>
+        <div class="u-grid">
+          <button class="primary" onclick="startFocus(25)">▶ 25 MIN</button>
+          <button onclick="startFocus(50)">▶ 50 MIN</button>
+          <button onclick="pauseFocus()">⏸ PAUSE</button>
+          <button onclick="resetFocus()">↺ RESET</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sectionhead"><div class="title">📈 FOCUS STATS</div></div>
+        <div class="u-grid">
+          <div class="stat"><div class="statname">SESSIONS</div><div class="statvalue" id="focusSessions">0</div></div>
+          <div class="stat"><div class="statname">MINUTES</div><div class="statvalue" id="focusMinutes">0</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="backup" class="section">
+      <div class="card">
+        <div class="sectionhead"><div class="title">☁️ CLOUD / BACKUP</div><div class="hint">NO SERVER REQUIRED</div></div>
+        <div class="notice" style="margin-bottom:10px">
+          This version keeps data locally and gives you a portable encrypted-style JSON backup workflow.
+          For true multi-device sync, connect a backend such as Firebase/Supabase later.
+        </div>
+        <div class="u-grid">
+          <button class="primary" onclick="exportBackup()">⬇ EXPORT BACKUP</button>
+          <button onclick="document.getElementById('importFile').click()">⬆ IMPORT BACKUP</button>
+          <input id="importFile" type="file" accept=".json,application/json" style="display:none" onchange="importBackup(event)">
+          <button onclick="saveToClipboard()">📋 COPY BACKUP</button>
+          <button onclick="shareBackup()">📤 SHARE BACKUP</button>
+        </div>
+        <div class="notice" style="margin-top:10px">Backup before changing phones or clearing browser data.</div>
+      </div>
+      <div class="card">
+        <div class="sectionhead"><div class="title">🛡️ DATA SAFETY</div></div>
+        <div class="u-toggle"><span>Automatic local save</span><span>ON</span></div>
+        <div class="u-toggle"><span>Backup reminder</span><span id="backupReminderStatus">—</span></div>
+      </div>
+    </section>
+
+    <section id="settings" class="section">
+      <div class="card">
+        <div class="sectionhead"><div class="title">⚙️ SYSTEM SETTINGS</div></div>
+        <label class="u-toggle"><span>Daily XP multiplier</span><select class="u-select" id="xpMultiplier" style="width:110px" onchange="setMultiplier(this.value)"><option value="1">1×</option><option value="1.1">1.1×</option><option value="1.25">1.25×</option></select></label>
+        <label class="u-toggle"><span>Haptic feedback</span><input type="checkbox" id="haptics" onchange="setHaptics(this.checked)"></label>
+        <label class="u-toggle"><span>Auto-save backup reminder</span><input type="checkbox" id="backupReminder" onchange="setBackupReminder(this.checked)"></label>
+      </div>
+      <div class="card">
+        <div class="sectionhead"><div class="title">🚨 DANGER ZONE</div></div>
+        <button class="u-danger" style="width:100%" onclick="factoryReset()">☠ RESET ALL DATA</button>
+      </div>
+    </section>
+
   </main>
 </div>
 
@@ -315,6 +413,8 @@ function rank(){let d=day();return d>=71?"S-RANK":d>=51?"A-RANK":d>=36?"B-RANK":
 function lname(){return state.level>=20?"AWAKENED":state.level>=15?"SHADOW HUNTER":state.level>=10?"ELITE HUNTER":state.level>=5?"RISING HUNTER":"AWAKENED BEGINNER"}
 
 function gainXP(n){
+ n=Math.round(n*(state.settings?.multiplier||1));
+ if(state.settings?.haptics && navigator.vibrate) navigator.vibrate(25);
  const old=state.level;
  state.xp+=n;state.totalXP+=n;state.tokens+=Math.floor(n/25);
  while(state.xp>=req()){state.xp-=req();state.level++;state.sp++}
@@ -377,7 +477,7 @@ function modal(icon,title,text){document.getElementById("modalIcon").textContent
 function closeModal(){document.getElementById("modal").classList.remove("show")}
 
 function render(){
- renderReminders();
+ renderReminders(); renderUltimate();
  document.getElementById("rank").textContent=rank();
  document.getElementById("level").textContent=state.level;
  document.getElementById("levelName").textContent=lname();
@@ -577,6 +677,123 @@ function stopThemeSound(){
   toast("SYSTEM THEME STOPPED");
 }
 
+
+/* =========================
+   ULTIMATE SYSTEM
+========================= */
+function renderUltimate(){
+  const s=state.settings||{};
+  const m=document.getElementById("xpMultiplier"),h=document.getElementById("haptics"),b=document.getElementById("backupReminder");
+  if(m)m.value=String(s.multiplier||1);
+  if(h)h.checked=s.haptics!==false;
+  if(b)b.checked=!!s.backupReminder;
+  const fs=document.getElementById("focusSessions"),fm=document.getElementById("focusMinutes");
+  if(fs)fs.textContent=state.focus?.sessions||0;
+  if(fm)fm.textContent=state.focus?.minutes||0;
+  const br=document.getElementById("backupReminderStatus");
+  if(br)br.textContent=s.backupReminder?"ON":"OFF";
+  coachRefresh();
+}
+
+function coachText(){
+  const q=Object.values(state.quests||{}).filter(Boolean).length;
+  const remaining=DAILY.length-q;
+  const d=day(), l=state.level, streak=state.streak;
+  if(remaining===0) return `<b>SYSTEM ASSESSMENT:</b><br>Today's core quests are complete. Excellent execution. Protect your recovery, review what worked, and prepare tomorrow's first task.<br><br><span class="u-chip">DAY ${d}</span><span class="u-chip">LEVEL ${l}</span><span class="u-chip">STREAK ${streak}</span>`;
+  if(q===0) return `<b>SYSTEM ASSESSMENT:</b><br>Zero quests completed today. Don't wait for motivation. Start with the smallest useful action: 10 minutes of focused study or coding. Momentum comes after starting.<br><br><span class="u-chip">NEXT: ${DAILY[0].name}</span>`;
+  if(state.stats.focus<5) return `<b>COACH:</b><br>Your current focus stat is still developing. Use the Focus Chamber for one short session, put distractions away, then return to the next quest.<br><br><span class="u-chip">FOCUS ${state.stats.focus}</span><span class="u-chip">${remaining} QUESTS LEFT</span>`;
+  return `<b>COACH:</b><br>You're moving. Complete one quest at a time instead of trying to overhaul your entire life in one day. Your current best move is: <b>${DAILY.find(x=>!state.quests[x.id])?.name||"review your day"}</b>.<br><br><span class="u-chip">DAY ${d}</span><span class="u-chip">LEVEL ${l}</span><span class="u-chip">+${state.totalXP} TOTAL XP</span>`;
+}
+function coachRefresh(){const e=document.getElementById("coachMessage");if(e)e.innerHTML=coachText()}
+function coachPlan(){
+  const incomplete=DAILY.filter(x=>!state.quests[x.id]).slice(0,3);
+  state.coachPlan=incomplete.map((x,i)=>`${i+1}. ${x.name}`).join("\n");
+  saveSilent();
+  const e=document.getElementById("coachMessage");
+  if(e)e.innerHTML=`<b>TODAY'S MICRO PLAN:</b><br>${incomplete.length?incomplete.map((x,i)=>`${i+1}. <b>${x.name}</b> — ${x.xp} XP`).join("<br>"):"All core quests complete."}<br><br>Rule: start the first task before opening entertainment apps.`;
+  toast("PLAN GENERATED");
+}
+function saveCheckin(){
+  const energy=Math.max(1,Math.min(5,Number(document.getElementById("energy").value)||3));
+  const mood=Math.max(1,Math.min(5,Number(document.getElementById("mood").value)||3));
+  const text=document.getElementById("journal").value.slice(0,1000);
+  state.checkins[key()]={energy,mood,text,time:new Date().toISOString()};
+  saveSilent();toast("CHECK-IN SAVED");
+}
+function setMultiplier(v){state.settings.multiplier=Number(v)||1;saveSilent();toast("XP MULTIPLIER UPDATED")}
+function setHaptics(v){state.settings.haptics=!!v;saveSilent();toast("HAPTICS UPDATED")}
+function setBackupReminder(v){state.settings.backupReminder=!!v;saveSilent();toast("BACKUP REMINDER UPDATED")}
+
+let focusTimer=null,focusSeconds=0,focusRunning=false,focusTotal=0;
+function startFocus(minutes){
+  if(focusRunning)return;
+  focusSeconds=minutes*60;focusTotal=focusSeconds;focusRunning=true;
+  document.getElementById("timerMode").textContent="FOCUS MODE — PHONE DOWN";
+  clearInterval(focusTimer);
+  focusTimer=setInterval(()=>{
+    focusSeconds--;
+    updateFocusDisplay();
+    if(focusSeconds<=0){
+      clearInterval(focusTimer);focusRunning=false;
+      state.focus.sessions=(state.focus.sessions||0)+1;
+      state.focus.minutes=(state.focus.minutes||0)+Math.round(focusTotal/60);
+      gainXP(Math.round(focusTotal/5));
+      saveSilent();updateFocusDisplay();
+      fireReminder("⚡ FOCUS COMPLETE","Session complete. Take a short break, then choose your next quest.");
+    }
+  },1000);
+  updateFocusDisplay();
+}
+function pauseFocus(){
+  if(!focusRunning)return;
+  clearInterval(focusTimer);focusRunning=false;
+  document.getElementById("timerMode").textContent="PAUSED";
+}
+function resetFocus(){
+  clearInterval(focusTimer);focusRunning=false;focusSeconds=0;focusTotal=0;
+  document.getElementById("timerMode").textContent="READY";updateFocusDisplay();
+}
+function updateFocusDisplay(){
+  const m=Math.floor(focusSeconds/60),s=focusSeconds%60;
+  const e=document.getElementById("timerDisplay");
+  if(e)e.textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+  const fs=document.getElementById("focusSessions"),fm=document.getElementById("focusMinutes");
+  if(fs)fs.textContent=state.focus?.sessions||0;if(fm)fm.textContent=state.focus?.minutes||0;
+}
+
+function exportBackup(){
+  const data={app:"90-day-awakening-ultimate",version:3,exportedAt:new Date().toISOString(),state};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`90-day-awakening-backup-${key()}.json`;a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast("BACKUP EXPORTED");
+}
+function importBackup(ev){
+  const file=ev.target.files?.[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const x=JSON.parse(reader.result);
+      if(!x.state||!x.app.includes("90-day-awakening"))throw new Error("invalid");
+      state={...fresh(),...x.state,stats:{...fresh().stats,...x.state.stats},settings:{...fresh().settings,...(x.state.settings||{})},focus:{...fresh().focus,...(x.state.focus||{})}};
+      saveSilent();render();toast("BACKUP RESTORED");
+    }catch(e){toast("INVALID BACKUP FILE")}
+  };
+  reader.readAsText(file);
+}
+async function saveToClipboard(){
+  const text=JSON.stringify({app:"90-day-awakening-ultimate",version:3,state});
+  try{await navigator.clipboard.writeText(text);toast("BACKUP COPIED");}
+  catch(e){toast("CLIPBOARD BLOCKED")}
+}
+async function shareBackup(){
+  const text=JSON.stringify({app:"90-day-awakening-ultimate",version:3,state});
+  try{
+    if(navigator.share) await navigator.share({title:"90-Day Awakening Backup",text});
+    else await saveToClipboard();
+  }catch(e){}
+}
+
+
 document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{
  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
  document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));
@@ -591,31 +808,12 @@ init();
 #installAppBtn{display:none;position:fixed;left:50%;bottom:78px;transform:translateX(-50%);z-index:80;width:min(360px,calc(100% - 28px));padding:13px 16px;border-radius:14px;border:1px solid #35627a;background:#102338;color:#62e6ff;font-weight:900;box-shadow:0 10px 35px #0008}
 #installAppBtn.show{display:block}
 </style>
-<button id="installAppBtn" onclick="installPWA()">📲 INSTALL 90-DAY SYSTEM</button>
+<button id="installAppBtn" onclick="installPWA()">📲 INSTALL ULTIMATE SYSTEM</button>
 <script>
 let deferredInstallPrompt=null;
-window.addEventListener("beforeinstallprompt",e=>{
-  e.preventDefault();
-  deferredInstallPrompt=e;
-  document.getElementById("installAppBtn")?.classList.add("show");
-});
-async function installPWA(){
-  if(!deferredInstallPrompt){
-    toast("OPEN THIS PAGE IN CHROME TO INSTALL");
-    return;
-  }
-  deferredInstallPrompt.prompt();
-  try{await deferredInstallPrompt.userChoice;}catch(e){}
-  deferredInstallPrompt=null;
-  document.getElementById("installAppBtn")?.classList.remove("show");
-}
-window.addEventListener("appinstalled",()=>{
-  document.getElementById("installAppBtn")?.classList.remove("show");
-  try{toast("SYSTEM INSTALLED ⚔️")}catch(e){}
-});
-if("serviceWorker" in navigator){
-  window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
-}
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstallPrompt=e;document.getElementById("installAppBtn")?.classList.add("show")});
+async function installPWA(){if(!deferredInstallPrompt)return toast("USE CHROME TO INSTALL");deferredInstallPrompt.prompt();try{await deferredInstallPrompt.userChoice}catch(e){}deferredInstallPrompt=null;document.getElementById("installAppBtn")?.classList.remove("show")}
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 </script>
 
 </body>

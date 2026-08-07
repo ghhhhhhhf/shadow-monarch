@@ -1,7 +1,7 @@
 {
-  "name": "90 Day Awakening System",
-  "short_name": "90 Day System",
-  "description": "A personal 90-day RPG-style self-improvement system.",
+  "name": "90 Day Awakening Ultimate",
+  "short_name": "Awakening",
+  "description": "Personal 90-day RPG system with quests, coach, focus timer, reminders and backups.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
