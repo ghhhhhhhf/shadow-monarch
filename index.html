@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#05070d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>90 Day System v2</title>
+<style>
+:root{--bg:#05070d;--card:#0b1019;--card2:#101722;--line:#203044;--text:#eef5ff;--muted:#8190a5;--cyan:#62e6ff;--purple:#9b72ff;--green:#55e38f;--gold:#ffd76a;--red:#ff5d7a}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(circle at 20% 0%,#172a4a55,transparent 32%),radial-gradient(circle at 100% 25%,#3a1f5b44,transparent 30%),var(--bg);color:var(--text);font-family:Arial,sans-serif;min-height:100vh;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent)}
+.app{max-width:680px;margin:auto;padding:16px 13px 105px}
+.header{text-align:center;padding:10px 0 18px}
+.sys{font-size:10px;letter-spacing:4px;color:var(--cyan);font-weight:800}
+h1{font-size:30px;letter-spacing:2px;margin-top:7px}
+.sub{font-size:10px;color:var(--muted);margin-top:6px;letter-spacing:1px}
+.card{background:linear-gradient(145deg,#101722ee,#070b12ee);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:13px;box-shadow:0 14px 40px #0005}
+.hero{text-align:center;overflow:hidden;position:relative}
+.hero:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:#62e6ff14;filter:blur(40px);top:-140px;left:50%;transform:translateX(-50%)}
+.rank{color:var(--cyan);font-size:11px;letter-spacing:5px;font-weight:800}
+.level{font-size:58px;font-weight:900;line-height:1;margin:7px 0;text-shadow:0 0 30px #62e6ff55}
+.levelname{font-size:10px;letter-spacing:2px;color:var(--muted)}
+.xphead,.row{display:flex;justify-content:space-between;align-items:center}
+.xphead{font-size:10px;color:var(--muted);margin:17px 0 7px}
+.bar{height:9px;background:#182331;border-radius:20px;overflow:hidden}
+.fill{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--purple));box-shadow:0 0 15px #62e6ff66;transition:.4s}
+.dayrow{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);margin-top:15px;padding-top:14px}
+.day{font-size:25px;font-weight:900}.small{font-size:9px;color:var(--muted);letter-spacing:1px}
+.left{text-align:right}.left strong{display:block;color:var(--gold);font-size:19px}
+.tabs{position:sticky;top:0;z-index:20;background:#05070deF;padding:8px 0;margin-bottom:12px;display:flex;gap:6px;overflow:auto}
+.tab{flex:0 0 auto;border:1px solid var(--line);background:#0c131d;color:var(--muted);padding:9px 12px;border-radius:12px;font-size:10px;font-weight:800}
+.tab.active{color:var(--cyan);border-color:#35627a;background:#102031}
+.section{display:none}.section.active{display:block}
+.title{font-size:14px;font-weight:900;letter-spacing:1px}.hint{font-size:9px;color:var(--muted)}
+.sectionhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.quest{display:flex;gap:11px;align-items:center;padding:12px;border:1px solid #1b2939;background:#ffffff04;border-radius:13px;margin-bottom:8px}
+.check{width:27px;height:27px;border-radius:8px;border:1px solid #3a5069;display:grid;place-items:center;color:transparent;font-weight:900;flex:none}
+.quest.done{opacity:.52;border-color:#55e38f55}.quest.done .check{background:var(--green);color:#06140b;border-color:var(--green)}
+.qinfo{flex:1}.qname{font-size:12px;font-weight:800}.qmeta{font-size:9px;color:var(--cyan);margin-top:4px}
+.tag{font-size:8px;padding:5px 7px;border-radius:7px;background:#142133;color:var(--muted)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:9px}.stat{padding:12px;border:1px solid #1b2939;border-radius:12px;background:#ffffff04}.statname{font-size:10px;font-weight:800}.statvalue{color:var(--cyan);font-weight:900;font-size:11px}.statbar{height:5px;background:#192433;border-radius:10px;margin-top:8px;overflow:hidden}.statbar i{display:block;height:100%;background:linear-gradient(90deg,var(--purple),var(--cyan));width:0;transition:.4s}
+.skill{padding:14px;border:1px solid var(--line);border-radius:14px;background:#ffffff04;margin-bottom:9px}.skilltop{display:flex;justify-content:space-between}.skillname{font-weight:900;font-size:12px}.skillcost{color:var(--gold);font-size:9px}.skilldesc{font-size:9px;color:var(--muted);line-height:1.5;margin:6px 0}.skill button,.reward button{width:100%}
+button{border:1px solid #2b4057;background:#121c29;color:var(--text);padding:11px;border-radius:11px;font-size:10px;font-weight:800;cursor:pointer}
+button:active{transform:scale(.97)}button.primary{color:var(--cyan);border-color:#35627a;background:#112338}
+button.good{color:var(--green);border-color:#2d674a}button.warn{color:var(--gold)}button.danger{color:var(--red)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.reward{padding:12px;border:1px solid var(--line);border-radius:13px;margin-bottom:8px}.reward h3{font-size:11px}.reward p{font-size:9px;color:var(--muted);margin:5px 0 9px}.reward button[disabled]{opacity:.35}
+.calendar{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}.cal{aspect-ratio:1;border:1px solid #24364b;border-radius:7px;display:grid;place-items:center;font-size:8px;color:var(--muted);background:#ffffff03}.cal.current{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 10px #62e6ff33}.cal.done{background:#143523;color:var(--green);border-color:#286b49}.cal.future{opacity:.45}
+.boss{padding:16px;border:1px solid #4c3850;border-radius:15px;background:radial-gradient(circle at 80% 0%,#8b315322,transparent 40%),#100c16}.bossicon{font-size:38px}.boss h3{font-size:17px;margin-top:5px}.boss p{font-size:9px;color:var(--muted);line-height:1.5;margin:6px 0 12px}.boss .bar{margin:8px 0}.bossstatus{font-size:9px;color:var(--gold)}
+.ach{display:flex;gap:11px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}.ach:last-child{border:0}.achicon{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:#17202d;filter:grayscale(1);opacity:.4}.ach.unlocked .achicon{filter:none;opacity:1;background:#ffd76a14}.ach h3{font-size:11px}.ach p{font-size:9px;color:var(--muted);margin-top:3px}
+.notice{text-align:center;padding:10px;color:var(--muted);font-size:9px;border:1px dashed #29405a;border-radius:11px}
+.toast{position:fixed;z-index:100;left:50%;bottom:22px;transform:translate(-50%,120px);background:#101a28;border:1px solid #36516e;padding:12px 16px;border-radius:13px;font-size:11px;font-weight:800;transition:.3s;white-space:nowrap}.toast.show{transform:translate(-50%,0)}
+.modal{position:fixed;inset:0;background:#02050bdc;backdrop-filter:blur(9px);z-index:90;display:none;align-items:center;justify-content:center;padding:20px}.modal.show{display:flex}.modalbox{width:min(440px,100%);text-align:center;background:#0b111b;border:1px solid #30465e;border-radius:20px;padding:28px;box-shadow:0 20px 70px #000}.modalbox .big{font-size:44px}.modalbox h2{font-size:30px;margin:9px 0}.modalbox p{color:var(--muted);font-size:10px;line-height:1.6}.modalbox button{margin-top:18px;width:100%}
+@media(max-width:380px){h1{font-size:25px}.stats{grid-template-columns:1fr}.calendar{gap:4px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="sys">SYSTEM ONLINE • V2.0</div>
+    <h1>90 DAY AWAKENING</h1>
+    <div class="sub">YOUR REAL-LIFE RPG SYSTEM</div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="home">SYSTEM</button>
+    <button class="tab" data-tab="skills">SKILLS</button>
+    <button class="tab" data-tab="rewards">REWARDS</button>
+    <button class="tab" data-tab="calendar">CALENDAR</button>
+    <button class="tab" data-tab="boss">BOSS</button>
+    <button class="tab" data-tab="achievements">ACHIEVEMENTS</button>
+    <button class="tab" data-tab="reminders">REMINDERS</button>
+  </div>
+
+  <main>
+    <section id="home" class="section active">
+      <div class="card hero">
+        <div class="rank" id="rank">E-RANK</div>
+        <div class="level" id="level">1</div>
+        <div class="levelname" id="levelName">AWAKENED BEGINNER</div>
+        <div class="xphead"><span id="xpText">0 / 100 XP</span><span id="totalXP">TOTAL: 0</span></div>
+        <div class="bar"><div class="fill" id="xpFill"></div></div>
+        <div class="dayrow">
+          <div><div class="small">CURRENT DAY</div><div class="day" id="dayNumber">DAY 1</div></div>
+          <div class="left"><strong id="daysLeft">90</strong><div class="small">DAYS REMAINING</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="sectionhead"><div class="title">⚔️ DAILY QUESTS</div><div class="hint" id="questProgress">0 / 5</div></div>
+        <div id="dailyQuests"></div>
+      </div>
+
+      <div class="card">
+        <div class="sectionhead"><div class="title">📊 PLAYER STATS</div><div class="hint">GROW THROUGH ACTION</div></div>
+        <div class="stats" id="stats"></div>
+      </div>
+
+      <div class="card">
+        <div class="sectionhead"><div class="title">🔥 STREAK</div><div class="hint">BEST: <span id="bestStreak">0</span></div></div>
+        <div style="text-align:center;padding:5px"><div style="font-size:42px;font-weight:900" id="streak">0</div><div class="small">CONSECUTIVE DAYS</div></div>
+      </div>
+
+      <div class="card">
+        <div class="sectionhead"><div class="title">⚙️ SYSTEM</div></div>
+        <div class="grid2">
+          <button class="primary" onclick="save()">💾 SAVE</button>
+          <button class="warn" onclick="bonusXP()">✨ BONUS +10</button>
+          <button onclick="resetToday()">🔄 RESET DAY</button>
+          <button class="danger" onclick="factoryReset()">☠ RESET ALL</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills" class="section">
+      <div class="card">
+        <div class="sectionhead"><div class="title">🧩 SKILL TREE</div><div class="hint">SP: <span id="sp">0</span></div></div>
+        <div id="skillsList"></div>
+        <div class="notice">Skill points are earned when you level up. Choose upgrades that help your real life.</div>
+      </div>
+    </section>
+
+    <section id="rewards" class="section">
+      <div class="card">
+        <div class="sectionhead"><div class="title">🎒 INVENTORY / REWARDS</div><div class="hint">TOKENS: <span id="tokens">0</span></div></div>
+        <div id="rewardsList"></div>
+        <div class="notice">Only redeem rewards you've planned for yourself. Keep them healthy and reasonable.</div>
+      </div>
+    </section>
+
+    <section id="calendar" class="section">
+      <div class="card">
+        <div class="sectionhead"><div class="title">📅 90-DAY MAP</div><div class="hint">CURRENT: <span id="calDay">1</span></div></div>
+        <div class="calendar" id="calendarGrid"></div>
+      </div>
+      <div class="card">
+        <div class="title">🗓️ WEEKLY QUESTS</div>
+        <div style="height:10px"></div>
+        <div id="weeklyQuests"></div>
+      </div>
+    </section>
+
+    <section id="boss" class="section">
+      <div class="card">
+        <div class="sectionhead"><div class="title">👑 BOSS BATTLES</div><div class="hint">WEEKLY</div></div>
+        <div id="bossList"></div>
+      </div>
+    </section>
+
+    <section id="achievements" class="section">
+      <div class="card">
+        <div class="sectionhead"><div class="title">🏆 ACHIEVEMENTS</div><div class="hint"><span id="achCount">0</span> / 8</div></div>
+        <div id="achList"></div>
+      </div>
+    </section>
+
+    <section id="reminders" class="section">
+      <div class="card">
+        <div class="sectionhead"><div class="title">🔔 SYSTEM REMINDERS</div><div class="hint">PHONE ALERTS</div></div>
+        <div class="notice" style="margin-bottom:10px">
+          Notifications work best when this page is installed/opened from a supported browser context.
+          For reliable background alerts, the app needs to be hosted on HTTPS or installed as a PWA.
+        </div>
+        <div class="grid2" style="margin-bottom:10px">
+          <button class="primary" onclick="requestNotifications()">🔔 ENABLE NOTIFICATIONS</button>
+          <button onclick="testNotification()">🧪 TEST ALERT</button>
+        </div>
+        <div class="grid2">
+          <button onclick="toggleReminder('wake')">🌅 <span id="wakeBtn">SET WAKE REMINDER</span></button>
+          <button onclick="toggleReminder('study')">📚 <span id="studyBtn">SET STUDY REMINDER</span></button>
+        </div>
+        <div id="reminderStatus" class="notice" style="margin-top:10px"></div>
+      </div>
+
+      <div class="card">
+        <div class="sectionhead"><div class="title">⏰ CUSTOM ALARMS</div><div class="hint">DAILY</div></div>
+        <div class="grid2">
+          <label style="font-size:10px;color:var(--muted)">Wake time
+            <input id="wakeTime" type="time" style="display:block;width:100%;margin-top:6px;padding:10px;background:#101a27;color:#eef5ff;border:1px solid #2b4057;border-radius:10px">
+          </label>
+          <label style="font-size:10px;color:var(--muted)">Study time
+            <input id="studyTime" type="time" style="display:block;width:100%;margin-top:6px;padding:10px;background:#101a27;color:#eef5ff;border:1px solid #2b4057;border-radius:10px">
+          </label>
+        </div>
+        <button class="primary" style="width:100%;margin-top:10px" onclick="saveReminderTimes()">💾 SAVE TIMES</button>
+      </div>
+
+      <div class="card">
+        <div class="sectionhead"><div class="title">🎵 SYSTEM THEME</div><div class="hint">ORIGINAL SOUND</div></div>
+        <div class="notice" style="margin-bottom:10px">
+          This uses an original dark system-style sound generated by your browser, not the copyrighted Solo Leveling soundtrack.
+        </div>
+        <div class="grid2">
+          <button class="primary" onclick="toggleThemeSound()">▶ SYSTEM THEME</button>
+          <button onclick="playLevelSound()">⚡ LEVEL-UP SOUND</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal">
+  <div class="modalbox">
+    <div class="big" id="modalIcon">⚡</div>
+    <div class="sys">SYSTEM MESSAGE</div>
+    <h2 id="modalTitle">LEVEL UP</h2>
+    <p id="modalText"></p>
+    <button class="primary" onclick="closeModal()">CONTINUE</button>
+  </div>
+</div>
+
+<script>
+const DAILY=[
+ {id:"study",name:"Deep Study Session",xp:20,stat:"int"},
+ {id:"coding",name:"Coding / Skill Practice",xp:20,stat:"tech"},
+ {id:"exercise",name:"Physical Activity",xp:15,stat:"str"},
+ {id:"focus",name:"Focused Work — No Distractions",xp:15,stat:"focus"},
+ {id:"discipline",name:"Complete Planned Tasks",xp:25,stat:"disc"}
+];
+
+const WEEKLY=[
+ {id:"wstudy",name:"Complete 5 serious study sessions",xp:60},
+ {id:"wcode",name:"Build one small coding feature",xp:70},
+ {id:"wfitness",name:"Complete 4 exercise sessions",xp:60},
+ {id:"wfocus",name:"Do 5 distraction-free sessions",xp:60}
+];
+
+const SKILLS=[
+ {id:"focusBoost",name:"FOCUS BOOST",desc:"Permanent +2 FOCUS when unlocked.",cost:1,stat:"focus",amount:2},
+ {id:"studyBoost",name:"KNOWLEDGE CORE",desc:"Permanent +2 INTELLIGENCE when unlocked.",cost:1,stat:"int",amount:2},
+ {id:"techBoost",name:"TECH CORE",desc:"Permanent +2 TECH when unlocked.",cost:1,stat:"tech",amount:2},
+ {id:"disciplineBoost",name:"IRON DISCIPLINE",desc:"Permanent +2 DISCIPLINE when unlocked.",cost:1,stat:"disc",amount:2},
+ {id:"secondWind",name:"SECOND WIND",desc:"Unlock a second bonus quest reward of +15 XP per day.",cost:2,stat:null,amount:0},
+ {id:"mastery",name:"MASTER MODE",desc:"Permanent +5 to every stat.",cost:5,stat:"all",amount:5}
+];
+
+const REWARDS=[
+ {id:"music",name:"30 min guilt-free music",desc:"Take a planned music break.",cost:2},
+ {id:"game",name:"45 min gaming session",desc:"Use only after your main quests are done.",cost:4},
+ {id:"movie",name:"Watch a movie",desc:"A planned entertainment reward.",cost:6},
+ {id:"treat",name:"Favorite snack",desc:"Enjoy it normally; no restriction or punishment.",cost:5},
+ {id:"freeDay",name:"Relaxed evening",desc:"One planned low-pressure evening.",cost:10}
+];
+
+const BOSSES=[
+ {id:"boss1",week:1,name:"THE DISTRACTION BEAST",icon:"👹",desc:"Complete 5 daily quests on 3 different days this week.",goal:15,xp:100},
+ {id:"boss2",week:2,name:"THE PROCRASTINATION KING",icon:"👑",desc:"Complete at least 18 daily quests during this week.",goal:18,xp:120},
+ {id:"boss3",week:3,name:"THE COMFORT DEMON",icon:"😈",desc:"Complete 4 exercise + 4 study quests this week.",goal:8,xp:140},
+ {id:"boss4",week:4,name:"THE CHAOS LORD",icon:"☄️",desc:"Complete every daily quest on 2 separate days.",goal:10,xp:160},
+ {id:"boss5",week:5,name:"THE FOCUS TITAN",icon:"🗿",desc:"Complete 7 focus quests during this week.",goal:7,xp:180},
+ {id:"boss6",week:6,name:"THE FINAL GATE",icon:"⚔️",desc:"Finish 20 daily quests in one week.",goal:20,xp:220}
+];
+
+const ACH=[
+ {id:"first",icon:"⚡",name:"FIRST STEP",desc:"Complete 1 quest.",check:s=>s.totalCompleted>=1},
+ {id:"ten",icon:"🔥",name:"GETTING SERIOUS",desc:"Complete 10 quests.",check:s=>s.totalCompleted>=10},
+ {id:"xp100",icon:"💎",name:"CENTURION",desc:"Earn 100 total XP.",check:s=>s.totalXP>=100},
+ {id:"lvl5",icon:"👑",name:"RISING HUNTER",desc:"Reach level 5.",check:s=>s.level>=5},
+ {id:"lvl10",icon:"🌌",name:"ELITE HUNTER",desc:"Reach level 10.",check:s=>s.level>=10},
+ {id:"streak7",icon:"🛡️",name:"IRON WILL",desc:"Reach a 7-day streak.",check:s=>s.bestStreak>=7},
+ {id:"skill3",icon:"🧩",name:"SKILL BUILDER",desc:"Unlock 3 skills.",check:s=>Object.keys(s.skills).filter(k=>s.skills[k]).length>=3},
+ {id:"boss",icon:"🐉",name:"BOSS SLAYER",desc:"Defeat a weekly boss.",check:s=>s.bossesDefeated>=1}
+];
+
+function fresh(){
+ return {startDate:null,lastDate:null,level:1,xp:0,totalXP:0,sp:0,tokens:0,streak:0,bestStreak:0,totalCompleted:0,quests:{},weekly:{},skills:{},rewards:{},bosses:{},bossesDefeated:0,history:{},stats:{int:1,str:1,tech:1,focus:1,disc:1},reminders:{wake:false,study:false,wakeTime:"06:30",studyTime:"19:00"}};
+}
+let state=load();
+
+function load(){
+ try{
+  const x=JSON.parse(localStorage.getItem("90DaySystemV2"));
+  if(x)return {...fresh(),...x,stats:{...fresh().stats,...x.stats},reminders:{...fresh().reminders,...(x.reminders||{})}};
+ }catch(e){}
+ return fresh();
+}
+function save(){localStorage.setItem("90DaySystemV2",JSON.stringify(state));toast("PROGRESS SAVED");}
+function key(d=new Date()){return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`}
+
+function init(){
+ if(!state.startDate){state.startDate=key();state.lastDate=key();saveSilent()}
+ newDay();
+ render();
+}
+function newDay(){
+ const t=key();
+ if(state.lastDate!==t){
+  const a=new Date(state.lastDate),b=new Date(t);
+  const diff=Math.floor((b-a)/86400000);
+  if(diff===1){
+   const done=Object.values(state.quests).filter(Boolean).length;
+   state.streak=done?state.streak+1:0;
+  }else state.streak=0;
+  state.bestStreak=Math.max(state.bestStreak,state.streak);
+  state.quests={};
+  state.lastDate=t;
+  saveSilent();
+ }
+}
+function day(){
+ const a=new Date(state.startDate),b=new Date(key());
+ return Math.min(90,Math.max(1,Math.floor((b-a)/86400000)+1));
+}
+function req(){return state.level*100}
+function rank(){let d=day();return d>=71?"S-RANK":d>=51?"A-RANK":d>=36?"B-RANK":d>=21?"C-RANK":d>=11?"D-RANK":"E-RANK"}
+function lname(){return state.level>=20?"AWAKENED":state.level>=15?"SHADOW HUNTER":state.level>=10?"ELITE HUNTER":state.level>=5?"RISING HUNTER":"AWAKENED BEGINNER"}
+
+function gainXP(n){
+ const old=state.level;
+ state.xp+=n;state.totalXP+=n;state.tokens+=Math.floor(n/25);
+ while(state.xp>=req()){state.xp-=req();state.level++;state.sp++}
+ if(state.level>old)modal("⚡","LEVEL UP",`Level ${old} → ${state.level}. You gained ${state.level-old} skill point(s).`);
+ saveSilent();render();
+}
+function quest(id){
+ if(state.quests[id])return;
+ const q=DAILY.find(x=>x.id===id);if(!q)return;
+ state.quests[id]=true;state.totalCompleted++;state.stats[q.stat]++;
+ gainXP(q.xp);state.history[`${key()}_${id}`]=true;toast(`QUEST COMPLETE  +${q.xp} XP`);
+}
+function bonusXP(){gainXP(10);toast("BONUS XP +10")}
+function weekly(id){
+ if(state.weekly[id])return;
+ const q=WEEKLY.find(x=>x.id===id);if(!q)return;
+ state.weekly[id]=true;gainXP(q.xp);toast(`WEEKLY COMPLETE +${q.xp} XP`);
+}
+function unlockSkill(id){
+ if(state.skills[id])return;
+ const s=SKILLS.find(x=>x.id===id);if(!s||state.sp<s.cost)return toast("NOT ENOUGH SKILL POINTS");
+ state.sp-=s.cost;state.skills[id]=true;
+ if(s.stat==="all")Object.keys(state.stats).forEach(k=>state.stats[k]+=s.amount);
+ else if(s.stat)state.stats[s.stat]+=s.amount;
+ saveSilent();render();toast(`${s.name} UNLOCKED`);
+}
+function redeem(id){
+ const r=REWARDS.find(x=>x.id===id);if(!r)return;
+ if(state.tokens<r.cost)return toast("NOT ENOUGH TOKENS");
+ state.tokens-=r.cost;state.rewards[id]=(state.rewards[id]||0)+1;
+ saveSilent();render();modal("🎁","REWARD REDEEMED",`${r.name} is now in your inventory. Enjoy it as a planned reward.`);
+}
+function bossProgress(b){
+ const w=b.week;
+ const completed=Object.keys(state.history).filter(k=>k.includes("_")).length;
+ if(w===1)return Math.min(b.goal,Object.keys(state.history).filter(k=>k.endsWith("_study")||k.endsWith("_coding")||k.endsWith("_exercise")||k.endsWith("_focus")||k.endsWith("_discipline")).length);
+ if(w===2)return Math.min(b.goal,completed);
+ if(w===3)return Math.min(b.goal,Object.keys(state.history).filter(k=>k.endsWith("_exercise")||k.endsWith("_study")).length);
+ if(w===4)return Math.min(b.goal,completed);
+ if(w===5)return Math.min(b.goal,Object.keys(state.history).filter(k=>k.endsWith("_focus")).length);
+ return Math.min(b.goal,completed);
+}
+function defeatBoss(id){
+ if(state.bosses[id])return;
+ const b=BOSSES.find(x=>x.id===id);if(!b)return;
+ if(bossProgress(b)<b.goal)return toast("BOSS REQUIREMENT NOT MET");
+ state.bosses[id]=true;state.bossesDefeated++;gainXP(b.xp);toast(`BOSS DEFEATED +${b.xp} XP`);
+}
+function resetToday(){
+ if(!confirm("Reset today's daily quests?"))return;
+ state.quests={};saveSilent();render();toast("TODAY RESET");
+}
+function factoryReset(){
+ if(prompt("Type RESET to erase everything.")!=="RESET")return;
+ state=fresh();init();toast("SYSTEM RESET");
+}
+function saveSilent(){localStorage.setItem("90DaySystemV2",JSON.stringify(state))}
+function toast(m){const e=document.getElementById("toast");e.textContent=m;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1800)}
+function modal(icon,title,text){document.getElementById("modalIcon").textContent=icon;document.getElementById("modalTitle").textContent=title;document.getElementById("modalText").textContent=text;document.getElementById("modal").classList.add("show")}
+function closeModal(){document.getElementById("modal").classList.remove("show")}
+
+function render(){
+ renderReminders();
+ document.getElementById("rank").textContent=rank();
+ document.getElementById("level").textContent=state.level;
+ document.getElementById("levelName").textContent=lname();
+ document.getElementById("xpText").textContent=`${state.xp} / ${req()} XP`;
+ document.getElementById("totalXP").textContent=`TOTAL: ${state.totalXP}`;
+ document.getElementById("xpFill").style.width=Math.min(100,state.xp/req()*100)+"%";
+ document.getElementById("dayNumber").textContent=`DAY ${day()}`;
+ document.getElementById("daysLeft").textContent=90-day();
+ document.getElementById("streak").textContent=state.streak;
+ document.getElementById("bestStreak").textContent=state.bestStreak;
+ document.getElementById("sp").textContent=state.sp;
+ document.getElementById("tokens").textContent=state.tokens;
+ document.getElementById("calDay").textContent=day();
+ renderDaily();renderStats();renderSkills();renderRewards();renderCalendar();renderWeekly();renderBosses();renderAchievements();
+}
+function renderDaily(){
+ const e=document.getElementById("dailyQuests");e.innerHTML="";
+ DAILY.forEach(q=>{const done=!!state.quests[q.id];e.innerHTML+=`<div class="quest ${done?"done":""}" onclick="quest('${q.id}')"><div class="check">${done?"✓":""}</div><div class="qinfo"><div class="qname">${q.name}</div><div class="qmeta">+${q.xp} XP • +1 ${q.stat.toUpperCase()}</div></div><div class="tag">${done?"DONE":"QUEST"}</div></div>`});
+ document.getElementById("questProgress").textContent=`${Object.values(state.quests).filter(Boolean).length} / ${DAILY.length}`;
+}
+function renderStats(){
+ const names={int:"🧠 INTELLIGENCE",str:"💪 STRENGTH",tech:"💻 TECH",focus:"🎯 FOCUS",disc:"🛡️ DISCIPLINE"};
+ let e=document.getElementById("stats");e.innerHTML="";
+ Object.entries(names).forEach(([k,n])=>{let v=state.stats[k];e.innerHTML+=`<div class="stat"><div class="row"><span class="statname">${n}</span><span class="statvalue">${v}</span></div><div class="statbar"><i style="width:${Math.min(100,v*5)}%"></i></div></div>`});
+}
+function renderSkills(){
+ const e=document.getElementById("skillsList");e.innerHTML="";
+ SKILLS.forEach(s=>{let u=!!state.skills[s.id];e.innerHTML+=`<div class="skill"><div class="skilltop"><div class="skillname">${u?"✅ ":""}${s.name}</div><div class="skillcost">${u?"UNLOCKED":s.cost+" SP"}</div></div><div class="skilldesc">${s.desc}</div><button class="${u?"good":"primary"}" ${u?"disabled":""} onclick="unlockSkill('${s.id}')">${u?"UNLOCKED":"UNLOCK SKILL"}</button></div>`});
+}
+function renderRewards(){
+ const e=document.getElementById("rewardsList");e.innerHTML="";
+ REWARDS.forEach(r=>{let count=state.rewards[r.id]||0;e.innerHTML+=`<div class="reward"><h3>${r.name} ${count?`×${count}`:""}</h3><p>${r.desc}</p><button class="warn" onclick="redeem('${r.id}')">REDEEM • ${r.cost} TOKENS</button></div>`});
+}
+function renderCalendar(){
+ const e=document.getElementById("calendarGrid");e.innerHTML="";
+ for(let i=1;i<=90;i++){
+  const done=i<day();
+  e.innerHTML+=`<div class="cal ${i===day()?"current":""} ${done?"done":""} ${i>day()?"future":""}" title="Day ${i}">${i}</div>`;
+ }
+}
+function renderWeekly(){
+ const e=document.getElementById("weeklyQuests");e.innerHTML="";
+ WEEKLY.forEach(q=>{let d=!!state.weekly[q.id];e.innerHTML+=`<div class="quest ${d?"done":""}" onclick="weekly('${q.id}')"><div class="check">${d?"✓":""}</div><div class="qinfo"><div class="qname">${q.name}</div><div class="qmeta">+${q.xp} XP</div></div><div class="tag">${d?"DONE":"WEEKLY"}</div></div>`});
+}
+function renderBosses(){
+ const e=document.getElementById("bossList");e.innerHTML="";
+ BOSSES.forEach(b=>{let p=bossProgress(b),d=!!state.bosses[b.id];e.innerHTML+=`<div class="boss" style="margin-bottom:10px"><div class="bossicon">${b.icon}</div><h3>${b.name}</h3><p>${b.desc}</p><div class="bossstatus">${d?"DEFEATED":`PROGRESS ${p}/${b.goal}`}</div><div class="bar"><div class="fill" style="width:${Math.min(100,p/b.goal*100)}%"></div></div><button class="${d?"good":"primary"}" ${d?"disabled":""} onclick="defeatBoss('${b.id}')">${d?"BOSS DEFEATED":"CHALLENGE BOSS"}</button></div>`});
+}
+function renderAchievements(){
+ const e=document.getElementById("achList");e.innerHTML="";let n=0;
+ ACH.forEach(a=>{let u=a.check(state);if(u)n++;e.innerHTML+=`<div class="ach ${u?"unlocked":""}"><div class="achicon">${a.icon}</div><div><h3>${a.name}</h3><p>${a.desc}</p></div></div>`});
+ document.getElementById("achCount").textContent=n;
+}
+
+
+/* =========================
+   REMINDERS + ORIGINAL SOUND
+========================= */
+
+let themePlaying=false, audioCtx=null, themeTimer=null;
+
+function requestNotifications(){
+  if(!("Notification" in window)){
+    return toast("THIS BROWSER DOES NOT SUPPORT NOTIFICATIONS");
+  }
+  Notification.requestPermission().then(p=>{
+    toast(p==="granted" ? "NOTIFICATIONS ENABLED" : "NOTIFICATION PERMISSION DENIED");
+    renderReminders();
+  });
+}
+
+function testNotification(){
+  if(!("Notification" in window)) return toast("NOTIFICATIONS NOT SUPPORTED");
+  if(Notification.permission!=="granted"){
+    requestNotifications();
+    return;
+  }
+  new Notification("SYSTEM ONLINE ⚔️",{
+    body:"Your next quest is waiting. Time to level up.",
+    tag:"system-test"
+  });
+  toast("TEST ALERT SENT");
+}
+
+function toggleReminder(type){
+  if(!("Notification" in window)){
+    return toast("NOTIFICATIONS NOT SUPPORTED");
+  }
+  if(Notification.permission!=="granted"){
+    requestNotifications();
+    return;
+  }
+  state.reminders[type]=!state.reminders[type];
+  saveSilent();
+  renderReminders();
+  toast(state.reminders[type] ? type.toUpperCase()+" REMINDER ON" : type.toUpperCase()+" REMINDER OFF");
+}
+
+function saveReminderTimes(){
+  const w=document.getElementById("wakeTime").value;
+  const s=document.getElementById("studyTime").value;
+  if(w)state.reminders.wakeTime=w;
+  if(s)state.reminders.studyTime=s;
+  saveSilent();
+  renderReminders();
+  toast("REMINDER TIMES SAVED");
+}
+
+function renderReminders(){
+  const r=state.reminders||{};
+  const w=document.getElementById("wakeTime"),s=document.getElementById("studyTime");
+  if(w)w.value=r.wakeTime||"06:30";
+  if(s)s.value=r.studyTime||"19:00";
+  const wb=document.getElementById("wakeBtn"),sb=document.getElementById("studyBtn");
+  if(wb)wb.textContent=r.wake?"WAKE REMINDER ON":"SET WAKE REMINDER";
+  if(sb)sb.textContent=r.study?"STUDY REMINDER ON":"SET STUDY REMINDER";
+  const st=document.getElementById("reminderStatus");
+  if(st)st.textContent=`Wake: ${r.wakeTime||"06:30"} • Study: ${r.studyTime||"19:00"} • ${("Notification" in window && Notification.permission==="granted")?"Notifications allowed":"Notifications not enabled"}`;
+  scheduleInPageReminders();
+}
+
+let reminderLoopStarted=false;
+function scheduleInPageReminders(){
+  if(reminderLoopStarted)return;
+  reminderLoopStarted=true;
+  setInterval(()=>{
+    const now=new Date();
+    const hh=String(now.getHours()).padStart(2,"0");
+    const mm=String(now.getMinutes()).padStart(2,"0");
+    const stamp=key()+"_"+hh+":"+mm;
+    const r=state.reminders||{};
+    if(r.wake && r.wakeTime===hh+":"+mm && state._lastReminder!==stamp+"_wake"){
+      state._lastReminder=stamp+"_wake"; saveSilent(); fireReminder("🌅 WAKE UP","New day. Complete your first quest and start your 90-day run.");
+    }
+    if(r.study && r.studyTime===hh+":"+mm && state._lastReminder!==stamp+"_study"){
+      state._lastReminder=stamp+"_study"; saveSilent(); fireReminder("📚 STUDY QUEST","Focus mode activated. Start your study session.");
+    }
+  },15000);
+}
+
+function fireReminder(title,body){
+  playLevelSound();
+  if("Notification" in window && Notification.permission==="granted"){
+    try{new Notification(title,{body,tag:title});}catch(e){}
+  }
+  toast(title);
+}
+
+function getAudio(){
+  if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended")audioCtx.resume();
+  return audioCtx;
+}
+
+function note(freq,start,duration,type="sine",gain=.035){
+  const c=getAudio(),o=c.createOscillator(),g=c.createGain();
+  o.type=type;o.frequency.setValueAtTime(freq,start);
+  g.gain.setValueAtTime(0.0001,start);
+  g.gain.exponentialRampToValueAtTime(gain,start+.025);
+  g.gain.exponentialRampToValueAtTime(0.0001,start+duration);
+  o.connect(g);g.connect(c.destination);o.start(start);o.stop(start+duration+.03);
+}
+
+function playLevelSound(){
+  try{
+    const c=getAudio(),t=c.currentTime;
+    note(220,t,.18,"sine",.035);
+    note(330,t+.12,.22,"sine",.04);
+    note(440,t+.25,.28,"triangle",.045);
+    note(660,t+.42,.42,"triangle",.055);
+  }catch(e){}
+}
+
+function toggleThemeSound(){
+  if(themePlaying){stopThemeSound();return;}
+  themePlaying=true;
+  try{
+    const c=getAudio();
+    const notes=[110,146.83,164.81,220,196,146.83,123.47,164.81];
+    let i=0;
+    const play=()=>{
+      if(!themePlaying)return;
+      const now=c.currentTime;
+      note(notes[i%notes.length],now,.42,"triangle",.025);
+      note(notes[(i+2)%notes.length]/2,now,.7,"sine",.015);
+      i++;
+      themeTimer=setTimeout(play,430);
+    };
+    play();
+    toast("SYSTEM THEME PLAYING");
+  }catch(e){themePlaying=false;toast("AUDIO COULD NOT START");}
+}
+function stopThemeSound(){
+  themePlaying=false;
+  if(themeTimer)clearTimeout(themeTimer);
+  themeTimer=null;
+  toast("SYSTEM THEME STOPPED");
+}
+
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{
+ document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+ document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));
+ t.classList.add("active");document.getElementById(t.dataset.tab).classList.add("active");
+ window.scrollTo({top:0,behavior:"smooth"});
+}));
+
+init();
+</script>
+
+<style>
+#installAppBtn{display:none;position:fixed;left:50%;bottom:78px;transform:translateX(-50%);z-index:80;width:min(360px,calc(100% - 28px));padding:13px 16px;border-radius:14px;border:1px solid #35627a;background:#102338;color:#62e6ff;font-weight:900;box-shadow:0 10px 35px #0008}
+#installAppBtn.show{display:block}
+</style>
+<button id="installAppBtn" onclick="installPWA()">📲 INSTALL 90-DAY SYSTEM</button>
+<script>
+let deferredInstallPrompt=null;
+window.addEventListener("beforeinstallprompt",e=>{
+  e.preventDefault();
+  deferredInstallPrompt=e;
+  document.getElementById("installAppBtn")?.classList.add("show");
+});
+async function installPWA(){
+  if(!deferredInstallPrompt){
+    toast("OPEN THIS PAGE IN CHROME TO INSTALL");
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  try{await deferredInstallPrompt.userChoice;}catch(e){}
+  deferredInstallPrompt=null;
+  document.getElementById("installAppBtn")?.classList.remove("show");
+}
+window.addEventListener("appinstalled",()=>{
+  document.getElementById("installAppBtn")?.classList.remove("show");
+  try{toast("SYSTEM INSTALLED ⚔️")}catch(e){}
+});
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+}
+</script>
+
+</body>
+</html>
